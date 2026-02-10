@@ -7,8 +7,8 @@ from accounts.models import PartnerOrganisation
 class WebViewsTest(TestCase):
     def setUp(self):
         self.partner_org = PartnerOrganisation.objects.create(name='TestPartner')
-        self.partner = User.objects.create_user('puser', password='pass', role='PARTNER', partner_organisation=self.partner_org)
-        self.brady = User.objects.create_user('buser', password='pass', role='BRADY')
+        self.partner = User.objects.create_user('puser', password='pass', role='PARTNER', partner_organisation=self.partner_org, email='puser@example.com')
+        self.brady = User.objects.create_user('buser', password='pass', role='BRADY', email='buser@example.com')
         # create a draft deal for partner
         self.deal = Deal.objects.create(partner=self.partner_org, project_name='Web Test', end_customer_name='ACME', estimated_value=1000, product_category='PRINTERS', deal_type='NEW')
 

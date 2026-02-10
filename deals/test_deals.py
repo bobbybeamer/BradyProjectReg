@@ -18,10 +18,10 @@ class DealTests(TestCase):
         self.partner_org = PartnerOrganisation.objects.create(name='PartnerCo')
         self.partner_org2 = PartnerOrganisation.objects.create(name='PartnerTwo')
         self.partner_user = User.objects.create_user(username='p1', password='pass', role='PARTNER', partner_organisation=self.partner_org, email='p1@example.com')
-        self.other_user = User.objects.create_user(username='p2', password='pass', role='PARTNER', partner_organisation=self.partner_org2)
+        self.other_user = User.objects.create_user(username='p2', password='pass', role='PARTNER', partner_organisation=self.partner_org2, email='p2@example.com')
         # Brady and admin
-        self.brady_user = User.objects.create_user(username='b1', password='pass', role='BRADY')
-        self.admin_user = User.objects.create_user(username='admin', password='adminpass', role='ADMIN')
+        self.brady_user = User.objects.create_user(username='b1', password='pass', role='BRADY', email='b1@example.com')
+        self.admin_user = User.objects.create_user(username='admin', password='adminpass', role='ADMIN', email='admin@example.com')
 
         # Deals
         self.deal1 = Deal.objects.create(partner=self.partner_org, end_customer_name='ACME', project_name='D1', estimated_value=1000, product_category='PRINTERS', deal_type='NEW')
