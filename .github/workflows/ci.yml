@@ -12,6 +12,9 @@ jobs:
     strategy:
       matrix:
         python-version: [3.11]
+    env:
+      SECRET_KEY: test-secret-key-for-ci
+      DEBUG: 'False'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
