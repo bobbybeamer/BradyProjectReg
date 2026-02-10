@@ -1,8 +1,11 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from accounts.models import User
+from django.contrib.auth import get_user_model
 from .models import Deal
 from accounts.models import PartnerOrganisation
+
+User = get_user_model()
+
 
 class WebViewsTest(TestCase):
     def setUp(self):

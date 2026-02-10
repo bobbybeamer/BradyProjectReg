@@ -1,5 +1,8 @@
 from django.test import TestCase
-from accounts.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 
 class UserModelTests(TestCase):
     def test_admin_role_sets_is_staff(self):

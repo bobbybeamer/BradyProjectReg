@@ -1,7 +1,10 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from accounts.models import User
+from django.contrib.auth import get_user_model
 from notifications.models import Notification
+
+User = get_user_model()
+
 
 class NotificationsWebTest(TestCase):
     def setUp(self):
