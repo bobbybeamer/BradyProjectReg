@@ -10,7 +10,7 @@ class WebViewsTest(TestCase):
         self.partner = User.objects.create_user('puser', password='pass', role='PARTNER', partner_organisation=self.partner_org)
         self.brady = User.objects.create_user('buser', password='pass', role='BRADY')
         # create a draft deal for partner
-        self.deal = Deal.objects.create(partner=self.partner_org, project_name='Web Test', end_customer_name='ACME', estimated_value=1000)
+        self.deal = Deal.objects.create(partner=self.partner_org, project_name='Web Test', end_customer_name='ACME', estimated_value=1000, product_category='PRINTERS', deal_type='NEW')
 
     def test_partner_sees_own_deals(self):
         c = Client()

@@ -5,7 +5,7 @@ from notifications.models import Notification
 
 class NotificationsWebTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('nuser', password='pass', role='BRADY')
+        self.user = User.objects.create_user('nuser', password='pass', role='BRADY', email='nuser@example.com')
         Notification.objects.create(recipient=self.user, verb='Test', description='Hello')
         Notification.objects.create(recipient=self.user, verb='Later', description='Another')
 
