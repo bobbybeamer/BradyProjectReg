@@ -23,9 +23,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
-    'accounts',
-    'deals',
-    'notifications',
+    'accounts.apps.AccountsConfig',
+    'deals.apps.DealsConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [
