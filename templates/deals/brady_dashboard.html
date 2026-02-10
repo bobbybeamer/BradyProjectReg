@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}My Deals{% endblock %}
+
+{% block content %}
+<h1>My Deals</h1>
+
+<div class="filter-card">
+  <form method="get" class="row g-3">
+    <div class="col-md-3">
+      <label for="status" class="form-label">Filter by Status</label>
+      <select name="status" id="status" class="form-select">
+        <option value="">All Statuses</option>
+        {% for value, label in deal_statuses %}
+          <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="partner" class="form-label">Filter by Partner</label>
+      <select name="partner" id="partner" class="form-select">
+        <option value="">All Partners</option>
+        {% for partner in partners %}
+          <option value="{{ partner.id }}" {% if partner_filter == partner.id|stringformat:"s" %}selected{% endif %}>{{ partner.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="sort" class="form-label">Sort By</label>
+      <select name="sort" id="sort" class="form-select">
+        {% for sort_value, sort_label in sort_options %}
+          <option value="{{ sort_value }}" {% if sort_by == sort_value %}selected{% endif %}>{{ sort_label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label>&nbsp;</label>
+      <div>
+        <button type="submit" class="btn btn-brady-primary w-100">Apply Filters</button>
+      </div>
+    </div>
+  </form>
+  {% if status_filter or partner_filter or sort_by != '-updated_at' %}
+  <div style="margin-top: 1rem;">
+    <a href="{% url 'deals:brady_deals' %}" class="btn btn-sm btn-brady-secondary">Clear Filters</a>
+  </div>
+  {% endif %}
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Partner</th>
+      <th>Project</th>
+      <th>Status</th>
+      <th>Value</th>
+      <th>Expiry</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for deal in deals %}
+    <tr>
+      <td><strong>#{{ deal.id }}</strong></td>
+      <td>{{ deal.partner.name }}</td>
+      <td><a href="{% url 'deals:deal_detail' deal.id %}">{{ deal.project_name }}</a></td>
+      <td>
+        <span class="badge" style="
+          {% if deal.status == 'DRAFT' %}background-color: var(--brady-light-gray); color: #000;
+          {% elif deal.status == 'SUBMITTED' %}background-color: #0055AA; color: white;
+          {% elif deal.status == 'APPROVED' %}background-color: #28A745; color: white;
+          {% elif deal.status == 'REJECTED' %}background-color: #DC3545; color: white;
+          {% elif deal.status == 'EXPIRED' %}background-color: #FD7E14; color: white;
+          {% elif deal.status == 'CLOSED_WON' %}background-color: #FFC107; color: #000;
+          {% elif deal.status == 'CLOSED_LOST' %}background-color: #6C757D; color: white;
+          {% else %}background-color: #6C757D; color: white;
+          {% endif %}
+        ">{{ deal.get_status_display }}</span>
+      </td>
+      <td>£{{ deal.estimated_value|floatformat:0|intcomma }}</td>
+      <td>{{ deal.expiry_date|date:"d/m/Y"|default:"-" }}</td>
+      <td>
+        {% if deal.status == 'SUBMITTED' %}
+        <form method="post" action="{% url 'deals:approve_deal' deal.id %}" style="display:inline">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-success">✓ Approve</button>
+        </form>
+        <form method="post" action="{% url 'deals:reject_deal' deal.id %}" style="display:inline">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-danger">✗ Reject</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7" class="text-center">No deals found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if partner_filter %}&partner={{ partner_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">First</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if partner_filter %}&partner={{ partner_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">Previous</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">First</span></li>
+      <li class="page-item disabled"><span class="page-link">Previous</span></li>
+    {% endif %}
+    <li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if partner_filter %}&partner={{ partner_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if partner_filter %}&partner={{ partner_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">Last</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
+      <li class="page-item disabled"><span class="page-link">Last</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Brady Deal Portal (Demo)</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;margin:2rem;} a{display:inline-block;margin:0.5rem 0;}</style>
+</head>
+<body>
+  <h1>Brady Deal Registration Portal (Demo)</h1>
+  <p>This is a lightweight demo landing page. Use the links below to jump into the app.</p>
+  <ul>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'deals:my_deals' %}">Dashboard</a> — go to your dashboard</li>
+      {% if user.is_staff or user.is_superuser %}
+        <li><a href="/admin/">Admin</a> — manage users, partners and deals</li>
+      {% endif %}
+    {% else %}
+      <li><a href="/api/deals/">API: Deals</a> — DRF endpoints</li>
+      <li><a href="/api/">API root</a></li>
+    {% endif %}
+  </ul>
+  {% if not user.is_authenticated %}
+  <p>Demo credentials: <strong>admin1/admin1pass</strong>, <strong>brady1/brady1pass</strong>, <strong>partner1/partner1pass</strong></p>
+  {% endif %}
+</body>
+</html>

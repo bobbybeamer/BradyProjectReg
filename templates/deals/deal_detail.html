@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Deal {{ deal.id }}{% endblock %}
+{% block content %}
+<h1>Deal {{ deal.id }}: {{ deal.project_name }}</h1>
+<dl class="row">
+  <dt class="col-sm-3">Partner</dt><dd class="col-sm-9">{{ deal.partner.name }}</dd>
+  <dt class="col-sm-3">Project Name</dt><dd class="col-sm-9">{{ deal.project_name }}</dd>
+  <dt class="col-sm-3">End Customer</dt><dd class="col-sm-9">{{ deal.end_customer_name }}</dd>
+  <dt class="col-sm-3">Status</dt><dd class="col-sm-9"><span class="badge" style="background-color: {% if deal.status == 'DRAFT' %}#E9ECEF; color: #000{% elif deal.status == 'SUBMITTED' %}#0d6efd{% elif deal.status == 'APPROVED' %}#198754{% elif deal.status == 'REJECTED' %}#dc3545{% elif deal.status == 'EXPIRED' %}#FD7E14{% elif deal.status == 'CLOSED_WON' %}#FFC107; color: #000{% elif deal.status == 'CLOSED_LOST' %}#6C757D{% else %}#6c757d{% endif %}; color: white;">{{ deal.get_status_display }}</span></dd>
+  <dt class="col-sm-3">Estimated Value</dt><dd class="col-sm-9">£{{ deal.estimated_value|floatformat:0|intcomma }}</dd>
+  <dt class="col-sm-3">Product Category</dt><dd class="col-sm-9">{{ deal.get_product_category_display }}</dd>
+  <dt class="col-sm-3">Deal Type</dt><dd class="col-sm-9">{{ deal.get_deal_type_display }}</dd>
+  <dt class="col-sm-3">Description</dt><dd class="col-sm-9">{{ deal.description|default:"—" }}</dd>
+  <dt class="col-sm-3">Expected Close Date</dt><dd class="col-sm-9">{{ deal.expected_close_date|date:'d/m/Y'|default:"—" }}</dd>
+  <dt class="col-sm-3">Region</dt><dd class="col-sm-9">{{ deal.region|default:"—" }}</dd>
+  <dt class="col-sm-3">Internal Owner</dt><dd class="col-sm-9">{{ deal.internal_owner.username|default:"—" }}</dd>
+  <dt class="col-sm-3">Expiry Date</dt><dd class="col-sm-9">{{ deal.expiry_date|date:'d/m/Y'|default:"—" }}</dd>
+  <dt class="col-sm-3">Created</dt><dd class="col-sm-9">{{ deal.created_at|date:'d/m/Y H:i' }}</dd>
+  <dt class="col-sm-3">Last Updated</dt><dd class="col-sm-9">{{ deal.updated_at|date:'d/m/Y H:i' }}</dd>
+</dl>
+<div>
+  {% if user.role == 'PARTNER' and deal.status == 'DRAFT' %}
+    <form method="post" action="{% url 'deals:submit_deal' deal.id %}">{% csrf_token %}<button class="btn btn-primary">Submit</button></form>
+  {% endif %}
+
+  {% if user.role == 'PARTNER' and deal.status == 'APPROVED' %}
+    <form method="post" action="{% url 'deals:close_deal_won' deal.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-success">✓ Close as Won</button></form>
+    <form method="post" action="{% url 'deals:close_deal_lost' deal.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-warning">✗ Close as Lost</button></form>
+  {% endif %}
+
+  {% if deal.status == 'SUBMITTED' and user.role == 'BRADY' or deal.status == 'SUBMITTED' and user.role == 'ADMIN' %}
+    <form method="post" action="{% url 'deals:approve_deal' deal.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-success">Approve</button></form>
+    <form method="post" action="{% url 'deals:reject_deal' deal.id %}" style="display:inline">{% csrf_token %}<button class="btn btn-danger">Reject</button></form>
+  {% endif %}
+</div>
+{% endblock %}

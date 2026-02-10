@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<h1>Notifications</h1>
+<div style="margin-bottom: 1.5rem;">
+  <form method="post" action="{% url 'notifications:mark_all_read' %}" style="display:inline;">
+    {% csrf_token %}
+    <button class="btn btn-sm btn-brady-primary">✓ Mark all as read</button>
+  </form>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Message</th>
+        <th>By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for n in notifications %}
+      <tr class="{% if not n.read %}table-info{% endif %}">
+        <td>{{ n.created_at|date:'d/m/Y H:i' }}</td>
+        <td>
+          <strong>{{ n.verb }}</strong>
+          {% if n.description %}<div style="font-size: 0.9em; color: #666;">{{ n.description }}</div>{% endif %}
+        </td>
+        <td>
+          {% if n.changed_by %}
+            <span class="badge bg-brady-navy">{{ n.changed_by.username }}</span>
+          {% else %}
+            <span class="text-muted">-</span>
+          {% endif %}
+        </td>
+        <td style="white-space: nowrap;">
+          {% if not n.read %}
+          <form method="post" action="{% url 'notifications:mark_read' n.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-brady-primary">Mark read</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center text-muted">No notifications.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

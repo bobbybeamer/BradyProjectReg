@@ -1,0 +1,18 @@
+<div class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    🔔 {% if unread_count %}<span class="badge bg-danger">{{ unread_count }}</span>{% endif %}
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown" style="min-width:300px">
+    {% for n in notifications %}
+      <li class="dropdown-item{% if not n.read %} fw-bold{% endif %}">
+        <div><small class="text-muted">{{ n.created_at|date:'SHORT_DATETIME_FORMAT' }}</small></div>
+        <div>{{ n.verb }}</div>
+        <div><small>{{ n.description }}</small></div>
+      </li>
+    {% empty %}
+      <li class="dropdown-item">No notifications</li>
+    {% endfor %}
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="{% url 'notifications:list' %}">View all</a></li>
+  </ul>
+</div>

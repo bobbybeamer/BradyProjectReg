@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Partner Dashboard Overview{% endblock %}
+
+{% block content %}
+<h1><a href="{% url 'deals:partner_deals' %}" style="text-decoration: none; color: inherit;">Partner Dashboard</a></h1>
+<p>
+  <a class="btn btn-sm btn-brady-primary" href="{% url 'deals:create_deal' %}">+ Create New Deal</a>
+  <a class="btn btn-sm btn-brady-secondary" href="{% url 'deals:partner_deals' %}">View All Deals</a>
+</p>
+
+<div class="row mt-4">
+  <div class="col-md-3 mb-3">
+    <a href="{% url 'deals:partner_deals' %}" style="text-decoration: none; color: inherit;">
+      <div class="card card-brady total">
+        <div class="card-body">
+          <h5 class="card-title">Total Deals</h5>
+          <p class="card-text" style="font-size: 2.5em;">{{ total_deals }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{% url 'deals:partner_deals' %}?status=DRAFT" style="text-decoration: none; color: inherit;">
+      <div class="card card-brady draft">
+        <div class="card-body">
+          <h5 class="card-title">Draft</h5>
+          <p class="card-text" style="font-size: 2.5em;">{{ draft_deals }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{% url 'deals:partner_deals' %}?status=SUBMITTED" style="text-decoration: none; color: inherit;">
+      <div class="card card-brady submitted">
+        <div class="card-body">
+          <h5 class="card-title">Submitted</h5>
+          <p class="card-text" style="font-size: 2.5em;">{{ submitted_deals }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-3 mb-3">
+    <a href="{% url 'deals:partner_deals' %}?status=APPROVED" style="text-decoration: none; color: inherit;">
+      <div class="card card-brady approved">
+        <div class="card-body">
+          <h5 class="card-title">Approved</h5>
+          <p class="card-text" style="font-size: 2.5em;">{{ approved_deals }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-3 mb-3">
+    <a href="{% url 'deals:partner_deals' %}?status=REJECTED" style="text-decoration: none; color: inherit;">
+      <div class="card card-brady rejected">
+        <div class="card-body">
+          <h5 class="card-title">Rejected</h5>
+          <p class="card-text" style="font-size: 2.5em;">{{ rejected_deals }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-9 mb-3">
+    <div class="card card-brady value">
+      <div class="card-body">
+        <h5 class="card-title" style="color: var(--brady-navy);">Total Deal Value</h5>
+        <p class="card-text" style="font-size: 2.5em; color: var(--brady-navy);">£{{ total_value|floatformat:0|intcomma }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
