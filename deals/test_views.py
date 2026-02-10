@@ -15,14 +15,14 @@ class WebViewsTest(TestCase):
     def test_partner_sees_own_deals(self):
         c = Client()
         c.login(username='puser', password='pass')
-        r = c.get(reverse('deals:partner_dashboard'))
+        r = c.get(reverse('deals:partner_deals'))
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, 'Web Test')
 
     def test_brady_sees_brady_dashboard(self):
         c = Client()
         c.login(username='buser', password='pass')
-        r = c.get(reverse('deals:brady_dashboard'))
+        r = c.get(reverse('deals:brady_deals'))
         self.assertEqual(r.status_code, 200)
 
     def test_partner_submit_flow(self):

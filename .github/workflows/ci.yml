@@ -27,10 +27,16 @@ jobs:
           . .venv/bin/activate
           pip install -r requirements.txt
       - name: Run migrations
+        env:
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: 'False'
         run: |
           . .venv/bin/activate
           python manage.py migrate
       - name: Run tests
+        env:
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: 'False'
         run: |
           . .venv/bin/activate
-          python manage.py test deals notifications
+          python manage.py test deals notifications --verbosity=2 || (echo "Tests failed with exit code $?"; exit 1)
